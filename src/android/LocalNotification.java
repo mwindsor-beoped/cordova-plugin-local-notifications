@@ -696,6 +696,10 @@ public class LocalNotification extends CordovaPlugin {
 
         if (launchDetails == null && !deviceready && toast != null) {
             launchDetails = new Pair<Integer, String>(toast.getId(), event);
+        } else if (launchDetails == null && toast != null && event.equals("click")) {
+            launchDetails = new Pair<Integer, String>(toast.getId(), event);
+            String launchJs = "cordova.plugins.notification.local._setLaunchDetails()";
+            sendJavascript(launchJs);
         }
 
         sendJavascript(js);

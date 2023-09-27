@@ -548,6 +548,10 @@ UNNotificationPresentationOptions const OptionAlert = UNNotificationPresentation
 
     if (!deviceready && [event isEqualToString:@"click"]) {
         _launchDetails = @[toast.options.id, event];
+    } else if ([event isEqualToString:@"click"]) {
+        _launchDetails = @[toast.options.id, event];
+        NSString* launchJs = @"cordova.plugins.notification.local._setLaunchDetails()";
+        [self.commandDelegate evalJs:launchJs];
     }
 
     if (![event isEqualToString:@"clear"]) {
