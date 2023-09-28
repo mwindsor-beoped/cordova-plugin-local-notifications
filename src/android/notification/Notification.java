@@ -56,6 +56,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import de.appplant.cordova.plugin.notification.util.LaunchUtils;
+
 /**
  * Wrapper class around OS notification class. Handles basic operations
  * like show, delete, cancel for a single local notification instance.
@@ -219,8 +221,7 @@ public final class Notification {
             if (!date.after(new Date()) && trigger(intent, receiver))
                 continue;
 
-            PendingIntent pi = PendingIntent.getBroadcast(
-                    context, 0, intent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE);
+            PendingIntent pi = LaunchUtils.getBroadcastPendingIntent(context, intent);
 
             try {
                 switch (options.getPrio()) {
@@ -306,9 +307,7 @@ public final class Notification {
 
         for (String action : actions) {
             Intent intent = new Intent(action);
-
-            PendingIntent pi = PendingIntent.getBroadcast(
-                    context, 0, intent, FLAG_IMMUTABLE);
+            PendingIntent pi = LaunchUtils.getBroadcastPendingIntent(context, intent);
 
             if (pi != null) {
                 getAlarmMgr().cancel(pi);

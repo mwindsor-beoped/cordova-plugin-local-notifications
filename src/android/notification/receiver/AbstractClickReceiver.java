@@ -21,7 +21,6 @@
 
 package de.appplant.cordova.plugin.notification.receiver;
 
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,8 +28,6 @@ import android.os.Bundle;
 import de.appplant.cordova.plugin.notification.Manager;
 import de.appplant.cordova.plugin.notification.Notification;
 
-import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
-import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 import static de.appplant.cordova.plugin.notification.action.Action.CLICK_ACTION_ID;
 import static de.appplant.cordova.plugin.notification.action.Action.EXTRA_ID;
 
@@ -38,13 +35,18 @@ import static de.appplant.cordova.plugin.notification.action.Action.EXTRA_ID;
  * Abstract content receiver activity for local notifications. Creates the
  * local notification and calls the event functions for further proceeding.
  */
-abstract public class AbstractClickReceiver extends IntentService {
+abstract public class AbstractClickReceiver extends NotificationTrampolineActivity {
 
     // Holds a reference to the intent to handle.
     private Intent intent;
 
     public AbstractClickReceiver() {
-        super("LocalNotificationClickReceiver");
+        super();
+    }
+
+    public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      onHandleIntent(getIntent());
     }
 
     /**
@@ -52,7 +54,7 @@ abstract public class AbstractClickReceiver extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
-        this.intent        = intent;
+        // Holds a reference to the intent to handle.
 
         if (intent == null)
             return;
@@ -70,7 +72,6 @@ abstract public class AbstractClickReceiver extends IntentService {
             return;
 
         onClick(toast, bundle);
-        this.intent = null;
     }
 
     /**
@@ -86,12 +87,5 @@ abstract public class AbstractClickReceiver extends IntentService {
      */
     protected String getAction() {
         return getIntent().getExtras().getString(EXTRA_ID, CLICK_ACTION_ID);
-    }
-
-    /**
-     * Getter for the received intent.
-     */
-    protected Intent getIntent() {
-        return intent;
     }
 }
