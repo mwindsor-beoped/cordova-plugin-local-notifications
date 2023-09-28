@@ -1,5 +1,7 @@
 package de.appplant.cordova.plugin.notification.util;
 
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 
