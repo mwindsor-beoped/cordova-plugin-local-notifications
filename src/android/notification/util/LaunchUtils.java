@@ -19,7 +19,7 @@ public final class LaunchUtils {
    }
 
    private static int getIntentFlags() {
-        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        int flags = PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT;
 
         return flags;
     }
