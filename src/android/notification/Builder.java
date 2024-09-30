@@ -393,7 +393,17 @@ public final class Builder {
             intent.putExtras(extras);
         }
 
-        PendingIntent deleteIntent = LaunchUtils.getBroadcastPendingIntent(context, intent);
+        int reqCode = random.nextInt();
+
+        PendingIntent deleteIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            deleteIntent = PendingIntent.getBroadcast(
+                context, reqCode, intent, PendingIntent.FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
+        } else {
+            deleteIntent  = PendingIntent.getBroadcast(
+                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+
+        }
 
         builder.setDeleteIntent(deleteIntent);
     }
@@ -426,8 +436,17 @@ public final class Builder {
             intent.putExtras(extras);
         }
 
-        PendingIntent contentIntent = LaunchUtils.getTaskStackPendingIntent(context, intent);
+        int reqCode = random.nextInt();
 
+        PendingIntent contentIntent ;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            contentIntent = PendingIntent.getActivity(
+                context, reqCode, intent, PendingIntent.FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
+        } else {
+            contentIntent  = PendingIntent.getActivity(
+                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+
+        }
         builder.setContentIntent(contentIntent);
     }
 
@@ -473,7 +492,15 @@ public final class Builder {
             intent.putExtras(extras);
         }
 
-        return LaunchUtils.getTaskStackPendingIntent(context, intent);
+                int reqCode = random.nextInt();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            return PendingIntent.getActivity(
+                context, reqCode, intent, PendingIntent.FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
+        } else {
+            return PendingIntent.getActivity(
+                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+        }
     }
 
     /**
