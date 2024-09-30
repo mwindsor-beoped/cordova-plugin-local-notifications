@@ -45,6 +45,7 @@ import androidx.core.app.NotificationCompat.MessagingStyle.Message;
 import androidx.media.app.NotificationCompat.MediaStyle;
 
 import java.util.List;
+import java.util.Random;
 
 import de.appplant.cordova.plugin.notification.action.Action;
 import de.appplant.cordova.plugin.notification.util.LaunchUtils;
@@ -60,6 +61,9 @@ public final class Builder {
 
     // Notification options passed by JS
     private final Options options;
+
+    // To generate unique request codes
+    private final Random random = new Random();
 
     // Receiver to handle the clear event
     private Class<?> clearReceiver;
@@ -393,7 +397,17 @@ public final class Builder {
             intent.putExtras(extras);
         }
 
-        PendingIntent deleteIntent = LaunchUtils.getBroadcastPendingIntent(context, intent);
+        int reqCode = random.nextInt();
+
+        PendingIntent deleteIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            deleteIntent = PendingIntent.getBroadcast(
+                context, reqCode, intent, PendingIntent.FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
+        } else {
+            deleteIntent  = PendingIntent.getBroadcast(
+                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+
+        }
 
         builder.setDeleteIntent(deleteIntent);
     }
@@ -420,14 +434,23 @@ public final class Builder {
                 .putExtra(Notification.EXTRA_ID, options.getId())
                 .putExtra(Action.EXTRA_ID, Action.CLICK_ACTION_ID)
                 .putExtra(Options.EXTRA_LAUNCH, options.isLaunchingApp())
-                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
 
         if (extras != null) {
             intent.putExtras(extras);
         }
 
-        PendingIntent contentIntent = LaunchUtils.getTaskStackPendingIntent(context, intent);
+        int reqCode = random.nextInt();
 
+        PendingIntent contentIntent ;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            contentIntent = PendingIntent.getActivity(
+                context, reqCode, intent, PendingIntent.FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
+        } else {
+            contentIntent  = PendingIntent.getActivity(
+                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+
+        }
         builder.setContentIntent(contentIntent);
     }
 
@@ -467,13 +490,21 @@ public final class Builder {
                 .putExtra(Notification.EXTRA_ID, options.getId())
                 .putExtra(Action.EXTRA_ID, action.getId())
                 .putExtra(Options.EXTRA_LAUNCH, action.isLaunchingApp())
-                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
 
         if (extras != null) {
             intent.putExtras(extras);
         }
 
-        return LaunchUtils.getTaskStackPendingIntent(context, intent);
+                int reqCode = random.nextInt();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            return PendingIntent.getActivity(
+                context, reqCode, intent, PendingIntent.FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
+        } else {
+            return PendingIntent.getActivity(
+                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+        }
     }
 
     /**

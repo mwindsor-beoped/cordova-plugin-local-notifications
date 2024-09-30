@@ -33,7 +33,6 @@ import de.appplant.cordova.plugin.notification.Notification;
 import de.appplant.cordova.plugin.notification.Options;
 import de.appplant.cordova.plugin.notification.Request;
 import de.appplant.cordova.plugin.notification.receiver.AbstractTriggerReceiver;
-import de.appplant.cordova.plugin.notification.util.LaunchUtils;
 
 import static android.content.Context.POWER_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
@@ -85,7 +84,7 @@ public class TriggerReceiver extends AbstractTriggerReceiver {
     @Override
     public Notification buildNotification(Builder builder, Bundle bundle) {
         return builder
-        .setClickActivity(ClickReceiver.class)
+        .setClickActivity(ClickHandlerActivity.class)
         .setClearReceiver(ClearReceiver.class)
         .setExtras(bundle)
         .build();
